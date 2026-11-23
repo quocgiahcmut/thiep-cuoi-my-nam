@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thiệp cưới Thành Nam & Mỹ Ngọc</title>
+  <meta name="description" content="Trân trọng kính mời bạn đến dự lễ cưới của Thành Nam & Mỹ Ngọc – 06/02/2027.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Thiệp cưới Thành Nam & Mỹ Ngọc">
+  <meta property="og:description" content="Trân trọng kính mời bạn đến dự lễ cưới của chúng mình – 06/02/2027.">
+  <meta property="og:image" content="images/og.jpg">
+  <meta name="theme-color" content="#f7efe8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="locked">
+
+  <!-- Màn hình mở thiệp -->
+  <section id="cover" class="cover">
+    <div class="cover-inner">
+      <p class="eyebrow">Thiệp mời đám cưới</p>
+      <h1 class="script"><span data-bride>Mỹ Ngọc</span> <i>&amp;</i> <span data-groom>Thành Nam</span></h1>
+      <p class="invite">Trân trọng kính mời</p>
+      <p id="guestName" class="guest">Quý khách</p>
+      <button id="openBtn" class="btn">Mở thiệp ♥</button>
+    </div>
+  </section>
+
+  <button id="musicBtn" class="music" aria-label="Bật/tắt nhạc" hidden>♪</button>
+  <div id="petals" aria-hidden="true"></div>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <p class="eyebrow reveal">We are getting married</p>
+      <h2 class="script big reveal"><span data-bride>Mỹ Ngọc</span><br><i>&amp;</i><br><span data-groom>Thành Nam</span></h2>
+      <p class="date reveal" id="heroDate"></p>
+      <div class="countdown reveal" id="countdown">
+        <div><b id="cd-d">0</b><span>Ngày</span></div>
+        <div><b id="cd-h">0</b><span>Giờ</span></div>
+        <div><b id="cd-m">0</b><span>Phút</span></div>
+        <div><b id="cd-s">0</b><span>Giây</span></div>
+      </div>
+    </section>
+
+    <!-- Cô dâu chú rể -->
+    <section class="couple">
+      <h3 class="title reveal">Cô Dâu &amp; Chú Rể</h3>
+      <div class="couple-grid">
+        <article class="person reveal">
+          <div class="avatar" style="background-image:url(images/groom.jpg)"><span>N</span></div>
+          <h4 class="script" data-groom>Thành Nam</h4>
+          <p class="role">Chú rể</p>
+          <p class="desc">Con trai của ông bà Nguyễn Văn A &amp; Trần Thị B.</p>
+        </article>
+        <div class="heart reveal">♥</div>
+        <article class="person reveal">
+          <div class="avatar" style="background-image:url(images/bride.jpg)"><span>N</span></div>
+          <h4 class="script" data-bride>Mỹ Ngọc</h4>
+          <p class="role">Cô dâu</p>
+          <p class="desc">Con gái của ông bà Lê Văn C &amp; Phạm Thị D.</p>
+        </article>
+      </div>
+      <p class="story reveal">“Giữa muôn vàn người, chúng mình tìm thấy nhau. Và hôm nay, chúng mình muốn chia sẻ niềm hạnh phúc ấy cùng những người thân yêu nhất.”</p>
+    </section>
+
+    <!-- Sự kiện -->
+    <section class="events">
+      <h3 class="title reveal">Sự Kiện</h3>
+      <div id="eventList" class="event-grid"></div>
+      <button id="calBtn" class="btn ghost reveal">+ Thêm vào lịch</button>
+    </section>
+
+    <!-- Album -->
+    <section class="gallery">
+      <h3 class="title reveal">Album Ảnh Cưới</h3>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="rsvp">
+      <h3 class="title reveal">Xác Nhận Tham Dự</h3>
+      <p class="sub reveal">Sự hiện diện của bạn là niềm vui của chúng mình.</p>
+      <form id="rsvpForm" class="form reveal">
+        <input name="name" id="fName" placeholder="Họ và tên" required>
+        <select name="attend" required>
+          <option value="Sẽ tham dự">Mình sẽ tham dự</option>
+          <option value="Rất tiếc không thể đến">Rất tiếc, mình không thể đến</option>
+        </select>
+        <select name="guests">
+          <option value="1">Số người đi cùng: 1</option>
+          <option value="2">2 người</option>
+          <option value="3">3 người</option>
+          <option value="4">4 người</option>
+        </select>
+        <textarea name="wish" rows="4" placeholder="Lời chúc gửi đến cô dâu chú rể"></textarea>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn" type="submit">Gửi xác nhận</button>
+        <p id="formMsg" class="form-msg" role="status"></p>
+      </form>
+    </section>
+
+    <!-- Mừng cưới -->
+    <section class="gift">
+      <h3 class="title reveal">Hộp Mừng Cưới</h3>
+      <p class="sub reveal">Cảm ơn tình cảm của bạn dành cho chúng mình.</p>
+      <div class="gift-grid">
+        <div class="qr reveal"><img src="images/qr-groom.png" alt="QR mừng cưới chú rể" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'qr-ph',textContent:'Thêm ảnh QR vào images/qr-groom.png'}))"><p>Chú rể</p></div>
+        <div class="qr reveal"><img src="images/qr-bride.png" alt="QR mừng cưới cô dâu" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'qr-ph',textContent:'Thêm ảnh QR vào images/qr-bride.png'}))"><p>Cô dâu</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="script big"><span data-groom>Thành Nam</span> &amp; <span data-bride>Mỹ Ngọc</span></p>
+    <p>Rất mong được đón tiếp bạn!</p>
+  </footer>
+
+  <audio id="bgm" loop preload="none"></audio>
+  <script src="script.js"></script>
+</body>
+</html>
