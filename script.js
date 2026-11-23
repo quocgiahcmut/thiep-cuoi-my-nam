@@ -3,12 +3,12 @@ const CONFIG = {
   groom: "Thành Nam",
   bride: "Mỹ Ngọc",
   // Giờ bắt đầu tiệc chính (dùng cho đếm ngược & lịch)
-  date: "2027-02-06T11:00:00+07:00",
+  date: "2027-01-19T11:00:00+07:00",
   events: [
-    { title: "Lễ Thành Hôn", time: "09:00", date: "Thứ Bảy, 06/02/2027", place: "Tư gia nhà trai",
+    { title: "Lễ Thành Hôn", time: "09:00", date: "Thứ Ba, 19/01/2027", place: "Tư gia nhà trai",
       address: "123 Đường Hoa Hồng, Quận 1, TP. Hồ Chí Minh (địa chỉ demo)",
       map: "https://www.google.com/maps/search/?api=1&query=Ho+Chi+Minh+City" },
-    { title: "Tiệc Cưới", time: "11:00", date: "Thứ Bảy, 06/02/2027", place: "Trung tâm tiệc cưới Hoa Mai",
+    { title: "Tiệc Cưới", time: "11:00", date: "Thứ Ba, 19/01/2027", place: "Trung tâm tiệc cưới Hoa Mai",
       address: "456 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh (địa chỉ demo)",
       map: "https://www.google.com/maps/search/?api=1&query=Ho+Chi+Minh+City" }
   ],
@@ -39,7 +39,34 @@ if (to) {
 
 // Ngày hiển thị
 const target = new Date(CONFIG.date);
-$("#heroDate").textContent = target.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }).replace(/\//g, " · ");
+const vnDate = new Date(target.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+const DOW = ["Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"];
+$("#heroDate").textContent = `${DOW[vnDate.getDay()]}, ${vnDate.getDate()} tháng ${vnDate.getMonth() + 1}, ${vnDate.getFullYear()}`;
+
+// Tờ lịch tháng cưới (tuần bắt đầu Thứ Hai), ngày cưới khoanh tim
+(() => {
+  const y = vnDate.getFullYear(), mo = vnDate.getMonth(), day = vnDate.getDate();
+  const offset = (new Date(y, mo, 1).getDay() + 6) % 7;
+  const days = new Date(y, mo + 1, 0).getDate();
+  let cells = ["T2","T3","T4","T5","T6","T7","CN"].map(d => `<span class="dow">${d}</span>`).join("");
+  cells += "<span></span>".repeat(offset);
+  for (let d = 1; d <= days; d++) {
+    cells += d === day
+      ? `<span class="day-big" aria-label="Ngày cưới ${d}"><svg viewBox="0 0 40 36" aria-hidden="true"><use href="#heart"/></svg>${d}</span>`
+      : `<span>${d}</span>`;
+  }
+  $("#calendar").innerHTML = `<div class="cal-head">Tháng ${mo + 1}, ${y}</div><div class="cal-grid">${cells}</div>`;
+})();
+
+// Chạm vào chú rể
+const lines = ["Tụi mình cưới nhau rồi!", "Đừng chọc bụng anh mà!", "Nhớ đến ăn cỗ nha!", "Bụng này là bụng hạnh phúc đó.", "Vợ anh xinh chưa?", "Hẹn gặp bạn ngày 19/1 nhé!"];
+let li = 0;
+const groomBtn = $("#groomBtn"), bubble = $("#bubble");
+groomBtn.addEventListener("click", () => {
+  li = (li + 1) % lines.length; bubble.textContent = lines[li];
+  groomBtn.classList.remove("hop"); void groomBtn.offsetWidth; groomBtn.classList.add("hop");
+});
+groomBtn.addEventListener("animationend", e => { if (e.animationName === "hop") groomBtn.classList.remove("hop"); });
 
 // Đếm ngược
 function tick() {
@@ -55,9 +82,9 @@ tick(); setInterval(tick, 1000);
 
 // Sự kiện
 $("#eventList").innerHTML = CONFIG.events.map(e => `
-  <div class="card reveal">
-    <h4>${esc(e.title)}</h4>
-    <p class="when">${esc(e.time)} · ${esc(e.date)}</p>
+  <div class="ev">
+    <h3>${esc(e.title)}</h3>
+    <p class="when">${esc(e.time)}, ${esc(e.date)}</p>
     <p class="where"><b>${esc(e.place)}</b><br>${esc(e.address)}</p>
     <a href="${esc(e.map)}" target="_blank" rel="noopener">Xem bản đồ</a>
   </div>`).join("");
@@ -76,7 +103,7 @@ $("#calBtn").addEventListener("click", () => {
 
 // Album + lightbox
 const grid = $("#galleryGrid");
-grid.innerHTML = CONFIG.gallery.map(src => `<div class="ph reveal" data-src="${esc(src)}" style="background-image:url('${esc(src)}')"></div>`).join("");
+grid.innerHTML = CONFIG.gallery.map(src => `<button type="button" class="ph" aria-label="Xem ảnh" data-src="${esc(src)}" style="background-image:url('${esc(src)}')"></button>`).join("");
 $$(".ph", grid).forEach(el => {
   const img = new Image();
   img.onload = () => el.classList.add("has");
@@ -89,13 +116,12 @@ grid.addEventListener("click", e => {
   lb.innerHTML = `<img src="${esc(el.dataset.src)}" alt="Ảnh cưới">`; lb.classList.add("on");
 });
 
-// Reveal khi cuộn
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .15 });
-$$(".reveal").forEach(el => io.observe(el));
-
 // Cánh hoa rơi
 function petal() {
   const p = document.createElement("i"); p.className = "petal";
+  const c = ["#FF6F91","#FFC94A","#7CC6A4","#FF9FB2"][Math.floor(Math.random() * 4)];
+  p.innerHTML = `<svg viewBox="0 0 40 36"><path d="M20 33 C6 23 2 16 2 10 C2 5 6 2 11 2 C15 2 18 4 20 8 C22 4 25 2 29 2 C34 2 38 5 38 10 C38 16 34 23 20 33 Z" fill="${c}" stroke="#3D2C4E" stroke-width="4"/></svg>`;
+  p.style.setProperty("--rot", (Math.random() * 360 - 180) + "deg");
   p.style.left = Math.random() * 100 + "vw";
   p.style.setProperty("--dx", (Math.random() * 120 - 60) + "px");
   p.style.animationDuration = 7 + Math.random() * 6 + "s";
@@ -109,7 +135,7 @@ if (CONFIG.music) { bgm.src = CONFIG.music; musicBtn.hidden = false; }
 $("#openBtn").addEventListener("click", () => {
   $("#cover").classList.add("open"); document.body.classList.remove("locked");
   if (CONFIG.music) bgm.play().then(() => musicBtn.classList.add("on")).catch(() => {});
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) { for (let i = 0; i < 6; i++) setTimeout(petal, i * 300); setInterval(petal, 1200); }
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) { for (let i = 0; i < 6; i++) setTimeout(petal, i * 300); setInterval(petal, 1800); }
 });
 musicBtn.addEventListener("click", () => {
   if (bgm.paused) { bgm.play(); musicBtn.classList.add("on"); } else { bgm.pause(); musicBtn.classList.remove("on"); }
@@ -129,9 +155,9 @@ $("#rsvpForm").addEventListener("submit", async e => {
       const old = JSON.parse(localStorage.getItem("rsvp-demo") || "[]"); old.push(data);
       localStorage.setItem("rsvp-demo", JSON.stringify(old));
     }
-    msg.textContent = "Cảm ơn bạn! Chúng mình đã nhận được xác nhận ♥";
+    msg.textContent = "Đã gửi! Cảm ơn bạn, hẹn gặp ở đám cưới nha.";
     f.reset(); if (to) $("#fName").value = to.replace(/[-_+]/g, " ");
   } catch {
-    msg.textContent = "Gửi chưa được, bạn thử lại giúp mình nhé.";
+    msg.textContent = "Chưa gửi được. Bạn kiểm tra mạng rồi bấm gửi lại nhé.";
   }
 });
